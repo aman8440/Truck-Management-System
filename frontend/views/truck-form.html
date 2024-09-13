@@ -1,0 +1,139 @@
+<style>
+  .dashboard {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    position: fixed;
+    margin-top: 70px;
+  }
+
+  .design-table {
+    width: 50%;
+  }
+
+  .header_cont {
+    display: flex;
+    flex-direction: row;
+    width: 140%;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 13px;
+  }
+
+  .table-container {
+    width: 140%;
+  }
+</style>
+<div ng-include="'views/partials/header.html'"></div>
+<div class="dashboard">
+  <div class="design-table">
+    <div class="header_cont">
+      <h2 style="width: 100%;">Truck</h2>
+      <button class="btn btn-danger button" ng-click="redirecttoback()">Back</button>
+    </div>
+    <div class="table-container">
+      <form name="form" role="form" ng-submit="saveTrucks()">
+        <div class="form-group">
+          <label>Truck Number</label>
+          <input type="text" name="truck" class="form-control" ng-model="newTrucks.truck_number"
+            placeholder="Enter Truck Number" required
+            ng-class="{'has-error': form.truck.$touched && form.truck.$invalid}">
+          <div ng-show="form.truck.$touched && form.truck.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.truck.$error.required"> Truck
+              Number is required</small><br>
+          </div>
+          <div ng-show="form.truck.$touched">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-if="message1">{{message1}}</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Model</label>
+          <input type="text" name="model" class="form-control" ng-model="newTrucks.model"
+            placeholder="Enter Truck Model" required
+            ng-class="{'has-error': form.model.$touched && form.model.$invalid}">
+          <div ng-show="form.model.$touched && form.model.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.model.$error.required"> Truck
+              Model is required</small><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Capacity</label>
+          <input type="text" name="capacity" class="form-control" ng-model="newTrucks.capacity"
+            placeholder="Enter Truck Capacity" required
+            ng-class="{'has-error': form.capacity.$touched && form.capacity.$invalid}">
+          <div ng-show="form.capacity.$touched && form.capacity.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.capacity.$error.required"> Truck
+              Capacity is required</small><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Truck Milege</label>
+          <input type="text" name="truck_milege" class="form-control" ng-model="newTrucks.truck_milege"
+            placeholder="Enter Truck Milege" required
+            ng-class="{'has-error': form.truck_milege.$touched && form.truck_milege.$invalid}">
+          <div ng-show="form.truck_milege.$touched && form.truck_milege.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.truck_milege.$error.required">
+              Truck Milege is required</small><br>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Registration Date</label>
+          <div class="input-group date col-md-8 p-l-0">
+            <input type="text" name="date" class="form-control" id="datepicker-component"
+              ng-model="newTrucks.registration_date" placeholder="Registration Date" required
+              ng-class="{'has-error': form.date.$touched && form.date.$invalid}" datepicker>
+            <div class="input-group-append ">
+              <span class="input-group-text"><i class="pg-icon">calendar</i></span>
+            </div>
+          </div>
+          <div ng-show="form.date.$touched && form.date.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;"
+              ng-show="form.date.$error.required">Registration Date is required</small><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <div class="input-group date col-md-8 p-l-0">
+            <select class="full-width" style="padding: 5px;" name="status" ng-model="newTrucks.status"
+              placeholder="Select status" data-init-plugin="select2">
+              <option value="" disabled selected>Select status</option>
+              <option value="Available">Available</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Booked">Booked</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Driver Name</label>
+          <div class="input-group date col-md-8 p-l-0">
+            <select class="full-width" style="padding: 5px;" name="driver" ng-model="newTrucks.dri_name"
+              placeholder="Select driver name" data-init-plugin="select2" required
+              g-class="{'has-error': form.driver.$touched && form.driver.$invalid}">
+              <option value="" disabled selected>Select driver name</option>
+              <option ng-repeat="driver in drivers" value="{{driver.dri_name}}">
+                {{driver.dri_name}}
+            </select>
+          </div>
+          <div ng-show="form.driver.$touched && form.driver.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.driver.$error.required">Driver
+              Name is required</small><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-icon-left m-b-10" type="submit">
+            <i class="pg-icon">tick</i><span class="">Submit</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Additional dashboard content goes here -->
+</div>
+<div ng-include="'views/partials/sidebar.html'"></div>
