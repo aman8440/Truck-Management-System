@@ -1,0 +1,211 @@
+<style>
+  .dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    position: fixed;
+    margin-top: 70px;
+  }
+
+  .design-table {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .header_cont {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 13px;
+  }
+
+  .table-container {
+    width: 80%;
+    height: calc(100vh - 125px);
+    overflow-y: auto;
+  }
+
+  .table-responsive {
+    overflow: auto;
+  }
+
+  table.table tbody tr:nth-child(2n+1) {
+    background-color: #f2f2f2;
+  }
+
+  .table tbody tr td {
+    padding: 6px 20px;
+  }
+
+  .table tbody tr td p {
+    font-size: 11px;
+  }
+
+  .btn {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-left: 15px;
+  }
+
+  .search-container input[type=search] {
+    background: url(https://huragrand.com/admin/pages/img/search.png) 95% center / 15px auto no-repeat #fff;
+    width: 198.5px;
+  }
+
+  .pagaination {
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 4vh;
+    font-size: 12px;
+  }
+
+  .pagaination a {
+    color: rgb(63, 63, 63);
+    margin-right: 15px;
+  }
+  .pagaination .current {
+    color: rgb(177, 7, 7);
+  }
+</style>
+<div ng-include="'views/partials/header.html'"></div>
+
+<div class="dashboard">
+  <div class="design-table">
+    <div class="header_cont">
+      <h2>Trailer</h2>
+      <div class="search-container">
+        <form>
+          <input class="form-control" type="search" ng-model="queryText" placeholder="Search"
+            ng-change="loadTrailers()">
+        </form>
+      </div>
+      <button class="btn btn-primary button" ng-click="redirect()">Add Trailer</button>
+    </div>
+    <div class="table-container">
+      <div class="table-responsive">
+        <div id="basicTable_wrapper" class="dataTables_wrapper no-footer">
+          <table class="table table-hover dataTable no-footer" id="basicTable" role="grid">
+            <thead>
+              <tr role="row">
+                <th style="width:2%; font-size: 13px;" class="text-center sorting_disabled">#</th>
+
+                <th ng-click="sort('trailer_number')" style="width: 160.797px; text-align: center;">
+                  <div style="display: flex;">
+                    Trailer Number <span class="glyphicon sort-icon" ng-show="sortKey=='trailer_number'"
+                      ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                  </div>
+                </th>
+
+                <th ng-click="sort('model')" style="width: 170px; text-align: center;">Model <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='model'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+
+                <th ng-click="sort('capacity')" style="width: 100px; text-align: center;">Capacity <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='capacity'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+
+                <th ng-click="sort('registration_date')" style="width: 170px; text-align: center;">Registration Date
+                  <span class="glyphicon sort-icon" ng-show="sortKey=='registration_date'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+
+                <th ng-click="sort('trailer_type')" style="width: 170px; text-align: center;">Trailer Type <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='trailer_type'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+
+                <th ng-click="sort('status')" style="width: 82.625px; text-align: center;">Status <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='status'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+
+                <th ng-click="sort('truck_number')" style="width: 160px; text-align: center;">
+                  <div style="display: flex;">
+                    Truck Number <span class="glyphicon sort-icon" ng-show="sortKey=='truck_number'"
+                      ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                  </div>
+                </th>
+                <th style="width: 83.5781px; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="trailer in trailers" ng-class-even="'even'" ng-class-odd="'odd'">
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{$index + 1+ (currentPage - 1) * itemsPerPage}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.trailer_number}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.model}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.capacity}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.registration_date}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.trailer_type}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.status}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{trailer.truck_number}}</p>
+                </td>
+                <td class="v-align-middle">
+                  <div style="display: flex; justify-content: space-evenly;">
+                    <button aria-label="" class="btn btn-info btn-lg btn-icon-left m-b-10" type="button"
+                      ng-click="editTrailer(trailer)" style="margin-right: 14px;"><i class="pg-icon"
+                        style="color: #fff; font-size: 11px;">edit</i><span class=""
+                        style="color: #fff; font-size: 11px;">Edit</span></button>
+                    <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"
+                      ng-click="deleteTrailer(trailer.id)" style="font-size: 11px;"><i class="pg-icon"
+                        style="font-size: 11px;">trash</i>Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="trailers.length == 0">
+                <td colspan="10" class="text-center">No Trailers Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="pagaination" id="tableWithExportOptions_paginate">
+        <a class="paginate_button previous disabled" aria-controls="tableWithExportOptions" data-dt-idx="0" tabindex="0"
+          id="tableWithExportOptions_previous" ng-disabled="currentPage == 1" ng-click="prevPage()">Previous</a>
+        <span><a class="paginate_button" ng-repeat="page in getPageRange()" ng-class="{current: page == currentPage}"
+            ng-click="setPage(page)">{{page}}</a></span>
+        <a class="paginate_button next disabled" aria-controls="tableWithExportOptions" data-dt-idx="2" tabindex="0"
+          id="tableWithExportOptions_next" ng-disabled="currentPage == totalPages" ng-click="nextPage()">Next</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional dashboard content goes here -->
+</div>
+<div ng-include="'views/partials/sidebar.html'"></div>

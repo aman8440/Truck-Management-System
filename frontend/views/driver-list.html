@@ -1,0 +1,207 @@
+<style>
+  .dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    position: fixed;
+    margin-top: 70px;
+  }
+
+  .design-table {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .header_cont {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 13px;
+  }
+
+  .table-container {
+    width: 80%;
+    height: calc(100vh - 125px);
+    overflow-y: auto;
+  }
+
+  .table-responsive {
+    overflow: auto;
+  }
+
+  table.table tbody tr:nth-child(2n+1) {
+    background-color: #f2f2f2;
+  }
+
+  .table tbody tr td {
+    padding: 6px 20px;
+  }
+  .table tbody tr td p{
+    font-size: 11px;
+  }
+  .btn {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-left: 15px;
+  }
+
+  .search-container input[type=search] {
+    background: url(https://huragrand.com/admin/pages/img/search.png) 95% center / 15px auto no-repeat #fff;
+    width: 198.5px;
+  }
+
+  .pagaination {
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 4vh;
+    font-size: 12px;
+  }
+
+  .pagaination a {
+    color: rgb(63, 63, 63);
+    margin-right: 15px;
+  }
+  .pagaination .current{
+    color: rgb(177, 7, 7);
+  }
+</style>
+<div ng-include="'views/partials/header.html'"></div>
+
+<div class="dashboard">
+  <div class="design-table">
+    <div class="header_cont">
+      <h2>Drivers</h2>
+      <div class="search-container">
+        <form>
+          <input class="form-control" type="search" ng-model="queryText" placeholder="Search"
+            ng-change="loadDrivers()">
+        </form>
+      </div>
+      <button class="btn btn-primary button" ng-click="redirect()">Add Driver</button>
+    </div>
+    <div class="table-container">
+      <div class="table-responsive">
+        <div id="basicTable_wrapper" class="dataTables_wrapper no-footer">
+          <table class="table table-hover dataTable no-footer" id="basicTable" role="grid">
+            <thead>
+              <tr role="row">
+                <th style="width:2%; font-size: 13px;" class="text-center sorting_disabled">#</th>
+                <th ng-click="sort('dri_name')" style="width: 150.797px; text-align: center;">
+                  <div style="display: flex; flex-direction: row;"> Driver Name <span class="glyphicon sort-icon"
+                      ng-show="sortKey=='dri_name'"
+                      ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                  </div>
+                </th>
+                <th ng-click="sort('dri_email')" style="width: 123.719px; text-align: center;">
+                    Driver Email <span class="glyphicon sort-icon" ng-show="sortKey=='dri_email'"
+                      ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+                <th ng-click="sort('dri_phone')" style="width: 193.281px; text-align: center;">
+                  <div style="display: flex; flex-direction: row;">
+                    Driver Phone Number <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='dri_phone'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                  </div> 
+                </th>
+                <th ng-click="sort('license_number')" style="width: 193.281px; text-align: center;">License Number <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='license_number'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+                <th ng-click="sort('license_expiry_date')" style="width: 193.281px; text-align: center;"> <div style="display: flex; flex-direction: row;">
+                  License Expiry
+                  Date <span class="glyphicon sort-icon" ng-show="sortKey=='license_expiry_date'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </div>
+                </th>
+                <th ng-click="sort('dis_name')" style="width: 193.281px; text-align: center;">
+                  <div style="display: flex; flex-direction: row;">
+                    Dispatcher Name <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='dis_name'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                  </div>
+                </th>
+                <th ng-click="sort('status')" style="width: 82.625px; text-align: center;">Status <span
+                    class="glyphicon sort-icon" ng-show="sortKey=='status'"
+                    ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                </th>
+                <th style="width: 83.5781px; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="driver in drivers" ng-class-even="'even'"
+                ng-class-odd="'odd'">
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{$index + 1+ (currentPage - 1) * itemsPerPage}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{driver.dri_name}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{driver.dri_email}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{driver.dri_phone}}</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>{{driver.license_number}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{driver.license_expiry_date}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{driver.dis_name}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{driver.status}}</p>
+                </td>
+                <td class="v-align-middle">
+                  <div style="display: flex; justify-content: space-evenly;">
+                    <button aria-label="" class="btn btn-info btn-lg btn-icon-left m-b-10" type="button"
+                      ng-click="editDriver(driver)" style="margin-right: 14px;"><i class="pg-icon"
+                        style="color: #fff; font-size: 11px;">edit</i><span class="" style="color: #fff; font-size: 11px;">Edit</span></button>
+                    <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"
+                      ng-click="deleteDriver(driver.id)" style="font-size: 11px;"><i class="pg-icon" style="font-size: 10px;">trash</i>Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="drivers.length == 0">
+                <td colspan="10" class="text-center">No Drivers Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="pagaination" id="tableWithExportOptions_paginate">
+        <a class="paginate_button previous disabled" aria-controls="tableWithExportOptions" data-dt-idx="0" tabindex="0"
+          id="tableWithExportOptions_previous" ng-disabled="currentPage == 1" ng-click="prevPage()">Previous</a>
+        <span><a class="paginate_button" ng-repeat="page in getPageRange()" ng-class="{current: page == currentPage}"
+          ng-click="setPage(page)">{{page}}</a></span>
+        <a class="paginate_button next disabled" aria-controls="tableWithExportOptions" data-dt-idx="2" tabindex="0"
+          id="tableWithExportOptions_next" ng-disabled="currentPage == totalPages" ng-click="nextPage()">Next</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional dashboard content goes here -->
+</div>
+<div ng-include="'views/partials/sidebar.html'"></div>

@@ -1,0 +1,13 @@
+<IfModule mod_env.c>
+    SetEnv CI_ENV development
+</IfModule>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /truck_management
+
+    # Redirect requests to non-existing directories or files to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>

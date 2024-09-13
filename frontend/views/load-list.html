@@ -1,0 +1,238 @@
+<style>
+  .dashboard {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    position: fixed;
+    margin-top: 70px;
+  }
+
+  .header_cont {
+    display: flex;
+    flex-direction: row;
+    width: 140%;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 13px;
+  }
+
+  .table-container {
+    width: 140%;
+    height: 80%;
+    overflow-y: auto;
+  }
+
+  .table-responsive {
+    overflow: auto;
+  }
+</style>
+<div ng-include="'views/partials/header.html'"></div>
+
+<div class="dashboard">
+  <div class="design-table">
+    <div class="header_cont">
+      <h2 style="width: 100%;">Loads</h2>
+      <button class="btn btn-primary button" ng-click="redirect()">Add Loads</button>
+    </div>
+    <div class="table-container">
+      <div class="table-responsive">
+        <div id="basicTable_wrapper" class="dataTables_wrapper no-footer">
+          <table class="table table-hover dataTable no-footer" id="basicTable" role="grid">
+            <thead>
+              <tr role="row">
+                <th style="width:2%; font-size: 13px;" class="text-center sorting_disabled" rowspan="1" colspan="1"
+                  aria-label="
+                  trash_alt
+                ">#</th>
+                <th style="width: 121.797px;" class="sorting" tabindex="0" aria-controls="basicTable" rowspan="1"
+                  colspan="1" aria-label="Title: activate to sort column ascending">Driver Name</th>
+                <th style="width: 123.719px;" class="sorting_desc" tabindex="0" aria-controls="basicTable" rowspan="1"
+                  colspan="1" aria-label="Places: activate to sort column ascending" aria-sort="descending">Driver Email
+                </th>
+                <th style="width: 193.281px;" class="sorting" tabindex="0" aria-controls="basicTable" rowspan="1"
+                  colspan="1" aria-label="Activities: activate to sort column ascending">Driver Phone Number</th>
+                <th style="width: 82.625px;" class="sorting" tabindex="0" aria-controls="basicTable" rowspan="1"
+                  colspan="1" aria-label="Status: activate to sort column ascending">Status</th>
+                <th style="width: 83.5781px;" class="sorting" tabindex="0" aria-controls="basicTable" rowspan="1"
+                  colspan="1">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr role="row" class="odd">
+                <td class="v-align-middle">
+                  <div class="form-check d-flex align-items-center justify-content-center">
+                    <input type="checkbox" value="3" id="checkbox4">
+                    <label for="checkbox4" class="no-padding no-margin"></label>
+                  </div>
+                </td>
+                <td class="v-align-middle">
+                  <p>Life’s sadness shared</p>
+                </td>
+                <td class="v-align-middle sorting_1">
+                  <p>United States, India, China,Africa</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>he world speaks English. Common law, Magna Carta and the Bill of Rights are its wonderful legacy
+                  </p>
+                </td>
+                <td class="v-align-middle">
+                  <p>Public</p>
+                </td>
+                <td class="v-align-middle">
+                  <button aria-label="" class="btn btn-success btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">paint_bucket</i><span class="">Edit</span></button>
+                  <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">trash</i>Delete</button>
+                </td>
+              </tr>
+              <tr role="row" class="even">
+                <td class="v-align-middle">
+                  <div class="form-check d-flex align-items-center justify-content-center">
+                    <input type="checkbox" value="3" id="checkbox1">
+                    <label for="checkbox1" class="no-padding no-margin"></label>
+                  </div>
+                </td>
+                <td class="v-align-middle">
+                  <p>First Tour</p>
+                </td>
+                <td class="v-align-middle sorting_1">
+                  <p>United States, India, China,Africa</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>it is more then ONE nation/nationality as its fall name is The United Kingdom of Great Britain and
+                    North Ireland..</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>Public</p>
+                </td>
+                <td class="v-align-middle">
+                  <button aria-label="" class="btn btn-success btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">paint_bucket</i><span class="">Edit</span></button>
+                  <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">trash</i>Delete</button>
+                </td>
+              </tr>
+              <tr role="row" class="odd">
+                <td class="v-align-middle">
+                  <div class="form-check d-flex align-items-center justify-content-center">
+                    <input type="checkbox" value="3" id="checkbox5">
+                    <label for="checkbox5" class="no-padding no-margin"></label>
+                  </div>
+                </td>
+                <td class="v-align-middle">
+                  <p>First Tour</p>
+                </td>
+                <td class="v-align-middle sorting_1">
+                  <p>United States, India, China,Africa</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>it is more then ONE nation/nationality as its fall name is The United Kingdom of Great Britain and
+                    North Ireland..</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>Public</p>
+                </td>
+                <td class="v-align-middle">
+                  <button aria-label="" class="btn btn-success btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">paint_bucket</i><span class="">Edit</span></button>
+                  <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">trash</i>Delete</button>
+                </td>
+              </tr>
+              <tr role="row" class="even">
+                <td class="v-align-middle">
+                  <div class="form-check d-flex align-items-center justify-content-center">
+                    <input type="checkbox" value="3" id="checkbox6">
+                    <label for="checkbox6" class="no-padding no-margin"></label>
+                  </div>
+                </td>
+                <td class="v-align-middle">
+                  <p>First Tour</p>
+                </td>
+                <td class="v-align-middle sorting_1">
+                  <p>United States, India, China,Africa</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>it is more then ONE nation/nationality as its fall name is The United Kingdom of Great Britain and
+                    North Ireland..</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>Public</p>
+                </td>
+                <td class="v-align-middle">
+                  <button aria-label="" class="btn btn-success btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">paint_bucket</i><span class="">Edit</span></button>
+                  <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">trash</i>Delete</button>
+                </td>
+              </tr>
+              <tr role="row" class="odd">
+                <td class="v-align-middle">
+                  <div class="form-check d-flex align-items-center justify-content-center">
+                    <input type="checkbox" value="3" id="checkbox2">
+                    <label for="checkbox2" class="no-padding no-margin"></label>
+                  </div>
+                </td>
+                <td class="v-align-middle">
+                  <p>Among the children</p>
+                </td>
+                <td class="v-align-middle sorting_1">
+                  <p>United States, India, China,Africa</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>you want English, Scottish, Welsh, Irish, British, European or UK even a British (name other
+                    original
+                    country you came form or have roots to E.G. A British Japanese or a 5th generation</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>Public</p>
+                </td>
+                <td class="v-align-middle">
+                  <button aria-label="" class="btn btn-success btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">paint_bucket</i><span class="">Edit</span></button>
+                  <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">trash</i>Delete</button>
+                </td>
+              </tr>
+              <tr role="row" class="even">
+                <td class="v-align-middle">
+                  <div class="form-check d-flex align-items-center justify-content-center">
+                    <input type="checkbox" value="3" id="checkbox3">
+                    <label for="checkbox3" class="no-padding no-margin"></label>
+                  </div>
+                </td>
+                <td class="v-align-middle">
+                  <p>A day to remember</p>
+                </td>
+                <td class="v-align-middle sorting_1">
+                  <p>United States, India, China,Africa</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>UK was on top of the art world 18-19 century had the best food, best cloths and best entertainment
+                    back then) it was a hyper nation</p>
+                </td>
+                <td class="v-align-middle">
+                  <p>Public</p>
+                </td>
+                <td class="v-align-middle">
+                  <button aria-label="" class="btn btn-success btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">paint_bucket</i><span class="">Edit</span></button>
+                  <button aria-label="" class="btn btn-danger btn-icon-left m-b-10" type="button"><i
+                      class="pg-icon">trash</i>Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional dashboard content goes here -->
+</div>
+<div ng-include="'views/partials/sidebar.html'"></div>

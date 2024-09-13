@@ -1,0 +1,181 @@
+<style>
+  .dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    position: fixed;
+    margin-top: 70px;
+  }
+
+  .design-table {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .header_cont {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 13px;
+  }
+
+  .table-container {
+    width: 80%;
+    height: calc(100vh - 125px);
+    overflow-y: auto;
+  }
+
+  .table-responsive {
+    overflow: auto;
+  }
+
+  table.table tbody tr:nth-child(2n+1) {
+    background-color: #f2f2f2;
+  }
+
+  .table tbody tr td {
+    padding: 6px 20px;
+  }
+
+  .table tbody tr td p {
+    font-size: 11px;
+  }
+
+  .btn {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 76%;
+    margin-left: 15px;
+  }
+
+  .search-container input[type=search] {
+    background: url(https://huragrand.com/admin/pages/img/search.png) 95% center / 15px auto no-repeat #fff;
+    width: 198.5px;
+  }
+
+  .pagaination {
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 4vh;
+    font-size: 12px;
+  }
+
+  .pagaination a {
+    color: rgb(63, 63, 63);
+    margin-right: 15px;
+  }
+  .pagaination .currents{
+    color: rgb(177, 7, 7);
+  }
+</style>
+
+<div ng-include="'views/partials/header.html'"></div>
+<div class="dashboard">
+  <div class="design-table">
+    <div class="header_cont">
+      <h2>Dispatcher</h2>
+      <div class="search-container">
+        <form>
+          <input class="form-control" type="search" ng-model="queryText" placeholder="Search"
+            ng-change="loadDispatchers()">
+        </form>
+      </div>
+      <button class="btn btn-primary button" ng-click="redirect()">Add Dispatcher</button>
+    </div>
+    <div class="table-container">
+      <div class="table-responsive">
+        <div id="tableWithSearch_wrapper" class="dataTables_wrapper no-footer">
+          <table class="table table-hover dataTable no-footer" id="basicTable" role="grid">
+            <thead>
+              <tr role="row">
+                <th class="text-center" style="width:2%; font-size: 13px; text-align: center;">#</th>
+
+                <th ng-click="sort('dis_name')" style="width: 121.797px; text-align: center;">
+                  <div>Dispatcher Name <span class="glyphicon sort-icon" ng-show="sortKey=='dis_name'"
+                      ng-class="{'glyphicon-chevron-up': !sortReverse, 'glyphicon-chevron-down': sortReverse}"></span>
+                  </div>
+                </th>
+                <th ng-click="sort('dis_email')" style="width: 123.719px; text-align: center;">Dispatcher Email
+                  <span class="glyphicon sort-icon" ng-show="sortKey=='dis_email'"
+                    ng-class="{'glyphicon-chevron-up':sortReverse,'glyphicon-chevron-down':!sortReverse}"></span>
+                </th>
+                <th ng-click="sort('dis_phone')" style="width: 140px; text-align: center;">Dispatcher Phone Number
+                  <span class="glyphicon sort-icon" ng-show="sortKey=='dis_phone'"
+                    ng-class="{'glyphicon-chevron-up':sortReverse,'glyphicon-chevron-down':!sortReverse}"></span>
+                </th>
+                <th ng-click="sort('status')" style="width: 73px; text-align: center;">Status
+                  <span class="glyphicon sort-icon" ng-show="sortKey=='status'"
+                    ng-class="{'glyphicon-chevron-up':sortReverse,'glyphicon-chevron-down':!sortReverse}"></span>
+                </th>
+                <th style="width: 83.5781px; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="dispatcher in dispatchers" ng-class-even="'even'" ng-class-odd="'odd'">
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{$index + 1 + (currentPage - 1) * itemsPerPage}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{dispatcher.dis_name}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{dispatcher.dis_email}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{dispatcher.dis_phone}}</p>
+                </td>
+                <td class="v-align-middle" style="text-align: center;">
+                  <p>{{dispatcher.status}}</p>
+                </td>
+                <td class="v-align-middle">
+                  <div style="display: flex; justify-content: space-evenly;">
+                    <button aria-label="" class="btn btn-info btn-icon-left" type="button"
+                      ng-click="editDispatcher(dispatcher)" style="margin-right: 14px; font-size: 11px;">
+                      <i class="pg-icon" style="font-size: 11px;">edit</i><span>Edit</span>
+                    </button>
+                    <button class="btn btn-danger btn-icon-left" type="button"
+                      ng-click="deleteDispatcher(dispatcher.id)" style="font-size: 11px;">
+                      <i class="pg-icon" style="font-size: 11px;">trash</i>Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="dispatchers  .length == 0">
+                <td colspan="6" class="text-center">No Dispatchers Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="pagaination" id="tableWithExportOptions_paginate">
+        <a class="paginate_button previous disabled" aria-controls="tableWithExportOptions" data-dt-idx="0" tabindex="0"
+          id="tableWithExportOptions_previous" ng-disabled="currentPage == 1" ng-click="prevPage()">Previous</a>
+        <span> <a class="paginate_button" ng-repeat="page in getPageRange()" ng-class="{currents: page == currentPage}"
+            ng-click="setPage(page)">{{page}}</a></span>
+        <a class="paginate_button next disabled" aria-controls="tableWithExportOptions" data-dt-idx="2" tabindex="0"
+          id="tableWithExportOptions_next" ng-disabled="currentPage == totalPages" ng-click="nextPage()">Next</a>
+      </div>
+    </div>
+  </div>
+  <!-- Additional dashboard content goes here -->
+</div>
+<div ng-include="'views/partials/sidebar.html'"></div>

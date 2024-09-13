@@ -1,0 +1,153 @@
+<style>
+  .dashboard {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    position: fixed;
+    margin-top: 70px;
+  }
+
+  .design-table {
+    width: 50%;
+  }
+
+  .header_cont {
+    display: flex;
+    flex-direction: row;
+    width: 140%;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 13px;
+  }
+
+  .table-container {
+    width: 140%;
+  }
+</style>
+<div ng-include="'views/partials/header.html'"></div>
+<div class="dashboard">
+  <div class="design-table">
+    <div class="header_cont">
+      <h2 style="width: 100%;">Driver</h2>
+      <button class="btn btn-danger button" ng-click="redirecttoback()">Back</button>
+    </div>
+    <div class="table-container">
+      <form name="form" role="form" ng-submit="saveDrivers()">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="name" class="form-control" ng-model="newDrivers.dri_name"
+            placeholder="Enter Your Name" required ng-class="{'has-error': form.name.$touched && form.name.$invalid}">
+          <div ng-show="form.name.$touched && form.name.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.name.$error.required">Driver
+              Name is required</small><br>
+          </div>
+          <small class="error" style="color: #d03c45; font-size: 15px;" ng-if="message2">{{message2}}</small>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" ng-model="newDrivers.dri_email"
+            placeholder="Enter Your Email" required
+            ng-class="{'has-error': form.email.$touched && form.email.$invalid}">
+          <div ng-show="form.email.$touched && form.email.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.email.$error.required">Email is
+              required.</small>
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.email.$error.email">Invalid
+              email address.</small><br>
+          </div>
+          <div ng-show="form.email.$touched">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-if="message1">{{message1}}</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" class="form-control" ng-minlength="10" ng-maxlength="10" name="phone"
+            ng-model="newDrivers.dri_phone" placeholder="Enter Your Phone Number" required
+            ng-class="{'has-error': form.phone.$touched && form.phone.$invalid}">
+          <div ng-show="form.phone.$touched && form.phone.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.phone.$error.required">Phone
+              Number is required</small><br>
+            <small class="error" style="color: #d03c45; font-size: 15px;"
+              ng-show="(form.phone.$error.minlength || form.phone.$error.maxlength) && form.phone.$dirty">Invalid Phone
+              Number</small><br>
+
+          </div>
+          <div ng-show="form.email.$touched">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-if="message3">{{message3}}</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>License Number</label>
+          <input type="text" name="license" class="form-control" ng-model="newDrivers.license_number"
+            placeholder="Enter Your License Number" required
+            ng-class="{'has-error': form.license.$touched && form.license.$invalid}" ng-pattern="regex">
+          <div ng-show="form.license.$touched && form.license.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.license.$error.required">Driver
+              License Number is required</small>
+            <small class="error" style="color: #d03c45; font-size: 15px;"
+              ng-show="form.license.$invalid && form.license.$dirty">Invalid License Number</small><br>
+          </div>
+          <div ng-show="form.email.$touched">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-if="message4">{{message4}}</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>License Expiry Date</label>
+          <div class="input-group date col-md-8 p-l-0">
+            <input type="text" name="date" class="form-control" id="datepicker-component"
+              ng-model="newDrivers.license_expiry_date" placeholder="License Expiry Date" required
+              ng-class="{'has-error': form.date.$touched && form.date.$invalid}" datepicker1>
+            <div class="input-group-append ">
+              <span class="input-group-text"><i class="pg-icon">calendar</i></span>
+            </div>
+          </div>
+          <div ng-show="form.date.$touched && form.date.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;" ng-show="form.date.$error.required">License
+              Expiry Date is required</small><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Dispatcher Name</label>
+          <div class="input-group date col-md-8 p-l-0">
+            <select class="full-width" style="padding: 5px;" name="dispatcher" ng-model="newDrivers.dis_name"
+              placeholder="Select dispatcher name" data-init-plugin="select2" required
+              g-class="{'has-error': form.dispatcher.$touched && form.dispatcher.$invalid}">
+              <option value="" disabled selected>Select dispatcher name</option>
+              <option ng-repeat="dispatcher in dispatchers" value="{{dispatcher.dis_name}}">
+                {{dispatcher.dis_name}}
+            </select>
+          </div>
+          <div ng-show="form.dispatcher.$touched && form.dispatcher.$invalid">
+            <small class="error" style="color: #d03c45; font-size: 15px;"
+              ng-show="form.dispatcher.$error.required">Dispatcher Name is required</small><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <div class="input-group date col-md-8 p-l-0">
+            <select class="full-width" style="padding: 5px;" name="dispatcher" ng-model="newDrivers.status"
+              placeholder="Select status" data-init-plugin="select2">
+              <option value="" disabled selected>Select status</option>
+              <option value="Available">Available</option>
+              <option value="Booked">Booked</option>
+              <option value="Active">Active</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-icon-left m-b-10" type="submit">
+            <i class="pg-icon">tick</i><span class="">Submit</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Additional dashboard content goes here -->
+</div>
+<div ng-include="'views/partials/sidebar.html'"></div>
+
