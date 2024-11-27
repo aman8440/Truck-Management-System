@@ -12,7 +12,7 @@ use \Firebase\JWT\Key;
  */
 function generateToken($data)
 {
-  $key = 'your_secret_key'; // Change this to your secret key
+  $key = 'your_secret_key';
   $issuedAt = time();
   $expirationTime = $issuedAt + 3600;  // jwt valid for 1 hour from the issued time
   $payload = array(
@@ -20,7 +20,7 @@ function generateToken($data)
     'exp' => $expirationTime,
     'data' => $data
   );
-  return JWT::encode($payload, $key, 'HS256'); // Specify algorithm HS256 here
+  return JWT::encode($payload, $key, 'HS256');
 }
 
 /**
@@ -31,7 +31,7 @@ function generateToken($data)
  */
 function validateToken($token)
 {
-  $key = new Key('your_secret_key', 'HS256'); // Change this to your secret key
+  $key = new Key('your_secret_key', 'HS256');
   try {
     $decoded = JWT::decode($token, $key);
     // print_r($decoded->data);
@@ -39,4 +39,9 @@ function validateToken($token)
   } catch (Exception $e) {
     return null;
   }
+}
+function verifyToken($token)
+{
+  $secretKey = 'your_secret_key';
+  return JWT::decode($token, new Key($secretKey, 'HS256'));
 }
