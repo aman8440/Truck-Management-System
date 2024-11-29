@@ -89,11 +89,13 @@ $route['api/dispatcher/checkName']['POST'] = 'dispatcherController/checkUniqueNa
 $route['api/dispatcher/checkPhone']['POST'] = 'dispatcherController/checkUniquePhone';
 
 $route['api/project/list']['GET'] = 'userController/index';
+$route['api/project/status']['POST'] = 'userController/get_status';
+$route['api/project/tech']['POST'] = 'userController/get_tech';
 $route['api/project']['GET'] = 'userController/get_data';
 $route['api/project/details/(:num)']['GET'] = 'userController/view/$1';
 $route['api/project/create']['POST'] = 'userController/create';
 $route['api/project/update/(:num)']['PUT'] = 'userController/update/$1';
-$route['api/project/delete/(:num)']['PUT'] = 'userController/delete/$1';
+$route['api/project/delete/(:num)']['DELETE'] = 'userController/delete/$1';
 $route['auth/validate']['POST'] = 'userController/verify_token';
 
 $route['api/load'] = 'loadController/index';
