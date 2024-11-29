@@ -70,8 +70,12 @@ class UserController extends CI_Controller
     $order = $this->input->get('order');
     $page = $this->input->get('page');
     $limit = $this->input->get('limit');
+    $startAt = $this->input->get('project_startat');
+    $deadlineAt = $this->input->get('project_deadline');
+    $status = $this->input->get('project_status');
+    $tech = $this->input->get('project_tech');
     $offset = ($page - 1) * $limit;
-    $dispatchers = $this->userModel->get_users($search, $sort, $order, $page, $limit);
+    $dispatchers = $this->userModel->get_users($search, $sort, $order, $page, $limit, $startAt, $deadlineAt, $status, $tech);
     $this->output
       ->set_content_type('application/json')
       ->set_status_header(200)
@@ -95,6 +99,52 @@ class UserController extends CI_Controller
       ->set_output(json_encode($dispatchers));
   }
 
+  public function get_status(){
+    $this->verify_token();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty($data['project_startat']) || empty($data['project_deadline'])) {
+      $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(400)
+        ->set_output(json_encode(['status' => 'error', 'message' => 'Project start at and project deadline is required']));
+      return;
+    }
+    $status_data= $this->userModel->get_status($data);
+    $merged_project_tech = [];
+    foreach ($status_data as $project) {
+        $technologies = explode(', ', $project['project_status']);
+        $merged_project_tech = array_merge($merged_project_tech, $technologies);
+    }
+    $merged_project_tech = array_unique($merged_project_tech);
+    $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(200)
+        ->set_output(json_encode(['status' => 'success', 'data' => $merged_project_tech]));
+  }
+
+  public function get_tech(){
+    $this->verify_token();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty($data['project_status'])) {
+      $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(400)
+        ->set_output(json_encode(['status' => 'error', 'message' => 'Project status is required']));
+      return;
+    }
+    $project_tech= $this->userModel->get_tech($data);
+    $merged_project_tech = [];
+    foreach ($project_tech as $project) {
+        $technologies = explode(', ', $project['project_tech']);
+        $merged_project_tech = array_merge($merged_project_tech, $technologies);
+    }
+    $merged_project_tech = array_unique($merged_project_tech);
+    $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(200)
+        ->set_output(json_encode(['status' => 'success', 'data' => $merged_project_tech]));
+  }
+
   public function create()
   {
     $this->verify_token();
@@ -116,7 +166,7 @@ class UserController extends CI_Controller
       return;
     }
     $encoded_tech = json_encode($data['project_tech']);
-    echo $encoded_tech;
+    
     if (empty($data['project_name']) || empty($data['project_tech']) || empty($data['project_startat']) || empty($data['project_deadline']) || empty($data['project_client']) || empty($data['project_description'])) {
       $this->output
         ->set_content_type('application/json')
