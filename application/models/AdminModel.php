@@ -100,4 +100,36 @@ class AdminModel extends CI_Model
     $query = $this->db->get('Users');
     return $query->num_rows() == 0;
   }
+
+  public function prf_data($id, $image_name)
+  {
+    $this->db->where('id', $id);
+    $query = $this->db->get('Users');
+
+    if ($query->num_rows() > 0) {
+        $this->db->where('id', $id);
+        return $this->db->update('Users', ['image_name' => $image_name]);
+    } else {
+        return $this->db->insert('Users', ['id' => $id, 'image_name' => $image_name]);
+    }
+  }
+  public function get_image_name($id)
+  {
+    $this->db->select('image_name');
+    $this->db->from('Users');
+    $this->db->where('id', $id);
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+      return $query->row_array()['image_name'];
+    }
+    return null;
+  }
+
+  public function delete_image($id)
+  {
+    $this->db->set('image_name', NULL);
+    $this->db->where('id', $id);
+    return $this->db->update('Users');
+  }
 };

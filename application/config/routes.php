@@ -105,6 +105,8 @@ $route['api/load/update/(:num)'] = 'loadController/update/$1';
 $route['api/load/delete/(:num)'] = 'loadController/delete/$1';
 
 $route['me']['GET'] = 'adminController/view';
+$route['me/profile']['POST'] = 'adminController/api_upload_image';
+$route['me/profile/delete']['POST'] = 'adminController/api_delete_image';
 $route['api/login']['POST'] = 'adminController/login';
 $route['api/signup']['POST'] = 'adminController/create';
 $route['api/logout']['GET'] = 'adminController/logout';

@@ -18,6 +18,41 @@ class AdminController extends CI_Controller
     header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding, Authorization");
   }
+
+  public function verify_token()
+  {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!isset($input['token'])) {
+      $this->output
+           ->set_status_header(400)
+           ->set_content_type('application/json')
+           ->set_output(json_encode(array(
+             'status' => false,
+             'message' => 'Token is missing'
+           )));
+      return;
+    }
+    $token = str_replace('Bearer ', '', $input['token']);
+    $decoded_token = validateToken($token);
+    if ($decoded_token === null) {
+      $this->output
+           ->set_status_header(401)
+           ->set_content_type('application/json')
+           ->set_output(json_encode(array(
+             'status' => false,
+             'message' => 'Invalid token'
+           )));
+      return;
+    }
+    $this->output
+         ->set_content_type('application/json')
+         ->set_status_header(200)
+         ->set_output(json_encode(array(
+           'status' => true,
+           'message' => 'Token is valid',
+           'data' => $decoded_token
+         )));
+  }
   public function view()
   {
     $authHeader = $this->input->get_request_header('Authorization', true);
@@ -234,7 +269,7 @@ class AdminController extends CI_Controller
       ->set_output(json_encode(['status' => 'success', 'message' => 'Password reset successfully']));
   }
   public function logout()
-{
+  {
     if ($this->session->userdata('fname') && $this->session->userdata('lname')) {
         $this->session->unset_userdata('fname');
         $this->session->unset_userdata('lname');
@@ -247,5 +282,69 @@ class AdminController extends CI_Controller
             ->set_status_header(401)
             ->set_output(json_encode(['message' => 'No active session found']));
     }
-}
+  }
+
+  public function api_upload_image()
+  {
+    $this->verify_token();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty($data['id'])) {
+      $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(400)
+        ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
+      return;
+    }
+    $user_id= $data['id'];
+    $config['upload_path'] = '../../assets/images/uploads';
+    $config['allowed_types'] = 'jpg|png|jpeg|webp';
+    $config['max_size'] = 500; 
+    $this->load->library('upload', $config);
+
+    if (!$this->upload->do_upload('file')) {
+        $error = $this->upload->display_errors('', '');
+        echo json_encode(['status' => 'error', 'message' => $error]);
+        return;
+    }
+    $upload_data = $this->upload->data();
+    $image_name = $upload_data['file_name'];
+
+    $check = $this->adminModel->prf_data($user_id, $image_name);
+
+    if ($check) {
+      echo json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $image_name]);
+    } else {
+      echo json_encode(['status' => 'error', 'message' => 'Failed to save image data. Please try again.']);
+    }
+  }
+  public function api_delete_image()
+  {
+    $this->verify_token();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty($data['id'])) {
+      $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(400)
+        ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
+      return;
+    }
+    $user_id= $data['id'];
+    $image_name = $this->adminModel->get_image_name($user_id);
+
+    if (!$image_name) {
+      echo json_encode(['status' => 'error', 'message' => 'No image found for the provided user ID.']);
+      return;
+    }
+    $delete = $this->adminModel->delete_image($image_name);
+
+    if ($delete) {
+        $file_path = '../../assets/images/uploads' . $image_name;
+        if (file_exists($file_path)) {
+          unlink($file_path);
+        }
+        echo json_encode(['status' => 'success', 'message' => 'Image deleted successfully.']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to delete image. Please try again.']);
+    }
+  }
 };
