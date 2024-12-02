@@ -286,17 +286,17 @@ class AdminController extends CI_Controller
 
   public function api_upload_image()
   {
-    $this->verify_token();
-    $data = json_decode(file_get_contents('php://input'), true);
-    if (empty($data['id'])) {
-      $this->output
-        ->set_content_type('application/json')
-        ->set_status_header(400)
-        ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
-      return;
+    $user_id = $this->input->post('id');
+    if (empty($user_id)) {
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(400)
+            ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
+        return;
     }
-    $user_id= $data['id'];
-    $config['upload_path'] = '../../assets/images/uploads';
+
+    $user_id = (int)$user_id;
+    $config['upload_path'] = 'assets/images/uploads';
     $config['allowed_types'] = 'jpg|png|jpeg|webp';
     $config['max_size'] = 500; 
     $this->load->library('upload', $config);
@@ -306,20 +306,26 @@ class AdminController extends CI_Controller
         echo json_encode(['status' => 'error', 'message' => $error]);
         return;
     }
-    $upload_data = $this->upload->data();
-    $image_name = $upload_data['file_name'];
 
-    $check = $this->adminModel->prf_data($user_id, $image_name);
+    $upload_data = $this->upload->data();
+    $unique_id = uniqid();
+    $extension = pathinfo($upload_data['file_name'], PATHINFO_EXTENSION);
+    $unique_image_name = $unique_id . '.' . $extension;
+
+    $new_file_path = $config['upload_path'] . '/' . $unique_image_name;
+    rename($upload_data['full_path'], $new_file_path);
+
+    $check = $this->adminModel->prf_data($user_id, $unique_image_name);
 
     if ($check) {
-      echo json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $image_name]);
+        echo json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $unique_image_name]);
     } else {
-      echo json_encode(['status' => 'error', 'message' => 'Failed to save image data. Please try again.']);
-    }
+        echo json_encode(['status' => 'error', 'message' => 'Failed to save image data. Please try again.']);
+    } 
   }
+
   public function api_delete_image()
   {
-    $this->verify_token();
     $data = json_decode(file_get_contents('php://input'), true);
     if (empty($data['id'])) {
       $this->output
@@ -328,17 +334,17 @@ class AdminController extends CI_Controller
         ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
       return;
     }
-    $user_id= $data['id'];
+    $user_id= (int)$data['id'];
     $image_name = $this->adminModel->get_image_name($user_id);
 
     if (!$image_name) {
       echo json_encode(['status' => 'error', 'message' => 'No image found for the provided user ID.']);
       return;
     }
-    $delete = $this->adminModel->delete_image($image_name);
+    $delete = $this->adminModel->delete_image($user_id);
 
     if ($delete) {
-        $file_path = '../../assets/images/uploads' . $image_name;
+        $file_path = 'assets/images/uploads' . $image_name;
         if (file_exists($file_path)) {
           unlink($file_path);
         }
