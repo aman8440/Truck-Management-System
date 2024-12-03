@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class UserModel extends CI_Model
 {
 
-  public function get_users($search = '', $sort = 'project_name', $order = 'asc', $page = 1, $limit = 5, $startAt = '', $deadlineAt = '', $status = '', $tech = '')
+  public function get_users($search = '', $sort = 'id', $order = 'asc', $page = 1, $limit = 10, $startAt = '', $deadlineAt = '', $status = '', $tech = '')
   {
     $offset = ($page - 1) * $limit;
     $this->db->where('deleted_at', NULL);
@@ -34,17 +34,18 @@ class UserModel extends CI_Model
         $this->db->where('project_status', $status);
     }
     if (!empty($tech)) {
-        $techList = explode(',', $tech);
-        foreach ($techList as $t) {
-            $this->db->or_like('project_tech', $t);
-        }
+      $techList = explode(',', $tech);
+      $this->db->group_start();
+      foreach ($techList as $t) {
+        $this->db->or_like('project_tech', $t);
+      }
+      $this->db->group_end(); 
     }
 
     $this->db->order_by($sort, $order);
     $this->db->limit($limit, $offset);
     $query = $this->db->get('project_management');
     $result['data'] = $query->result();
-
     $this->db->where('deleted_at', NULL);
     if (!empty($search)) {
         $this->db->group_start();
@@ -76,9 +77,11 @@ class UserModel extends CI_Model
 
     if (!empty($tech)) {
       $techList = explode(',', $tech);
+      $this->db->group_start();
       foreach ($techList as $t) {
         $this->db->or_like('project_tech', $t);
       }
+      $this->db->group_end();
     }
     $result['total'] = $this->db->count_all_results('project_management');
     return $result;

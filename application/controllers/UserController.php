@@ -149,23 +149,6 @@ class UserController extends CI_Controller
   {
     $this->verify_token();
     $data = json_decode(file_get_contents('php://input'), true);
-    if (is_array($data['project_tech'])) {
-      $data['project_tech'] = json_encode($data['project_tech']);
-      if (json_last_error() !== JSON_ERROR_NONE) {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(400)
-            ->set_output(json_encode(['status' => 'error', 'message' => 'Invalid JSON data for project_tech']));
-        return;
-    }
-    } else {
-      $this->output
-          ->set_content_type('application/json')
-          ->set_status_header(400)
-          ->set_output(json_encode(['status' => 'error', 'message' => 'Project tech must be an array']));
-      return;
-    }
-    $encoded_tech = json_encode($data['project_tech']);
     
     if (empty($data['project_name']) || empty($data['project_tech']) || empty($data['project_startat']) || empty($data['project_deadline']) || empty($data['project_client']) || empty($data['project_description'])) {
       $this->output
@@ -180,6 +163,9 @@ class UserController extends CI_Controller
         ->set_status_header(400)
         ->set_output(json_encode(['status' => 'error', 'message' => 'Only letters and white space allowed']));
       return;
+    }
+    if (is_array($data['project_tech'])) {
+      $data['project_tech'] = implode(', ', $data['project_tech']);
     }
     if ($this->userModel->create_listUser($data, $data['created_by'])) {
       $this->output
