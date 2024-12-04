@@ -36,7 +36,9 @@ function validateToken($token)
     $decoded = JWT::decode($token, $key);
     // print_r($decoded->data);
     return (array) $decoded->data;
-  } catch (Exception $e) {
+  } catch (\Firebase\JWT\ExpiredException $e) {
+    return 'expired';
+  }catch (Exception $e) {
     return null;
   }
 }

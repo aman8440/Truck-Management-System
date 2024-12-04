@@ -20,38 +20,28 @@ class UserController extends CI_Controller
 
   public function verify_token()
   {
-    $input = json_decode(file_get_contents('php://input'), true);
-    if (!isset($input['token'])) {
-      $this->output
-           ->set_status_header(400)
-           ->set_content_type('application/json')
-           ->set_output(json_encode(array(
-             'status' => false,
-             'message' => 'Token is missing'
-           )));
-      return;
+    $headers = $this->input->request_headers();
+    if (!isset($headers['Authorization'])) {
+      $this->output->set_status_header(401);
+      echo json_encode(array('status' => false, 'message' => 'Unauthorized access'));
+      exit();
     }
-    $token = str_replace('Bearer ', '', $input['token']);
+
+    $token = str_replace('Bearer ', '', $headers['Authorization']);
     $decoded_token = validateToken($token);
-    if ($decoded_token === null) {
-      $this->output
-           ->set_status_header(401)
-           ->set_content_type('application/json')
-           ->set_output(json_encode(array(
-             'status' => false,
-             'message' => 'Invalid token'
-           )));
-      return;
+
+    if ($decoded_token === 'expired') {
+      $this->output->set_status_header(401);
+      echo json_encode(array('status' => false, 'message' => 'Token has expired'));
+      exit();
+    } elseif ($decoded_token === null) {
+      $this->output->set_status_header(401);
+      echo json_encode(array('status' => false, 'message' => 'Unauthorized access'));
+      exit();
     }
-    $this->output
-         ->set_content_type('application/json')
-         ->set_status_header(200)
-         ->set_output(json_encode(array(
-           'status' => true,
-           'message' => 'Token is valid',
-           'data' => $decoded_token
-         )));
+    return $decoded_token;
   }
+  
 
   public function get_data()
   {
