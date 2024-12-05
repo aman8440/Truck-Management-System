@@ -87,6 +87,25 @@ class UserModel extends CI_Model
     return $result;
   }
 
+  public function get_data() {
+    $this->db->select("DATE_FORMAT(created_at, '%M') AS month_name, COUNT(*) AS project_count");
+    $this->db->from('project_management');
+    $this->db->where('created_at >=', date('Y-m-d', strtotime('-6 months')));
+    $this->db->group_by("DATE_FORMAT(created_at, '%M')");
+    $this->db->order_by("MIN(created_at)", "ASC");
+
+    $query = $this->db->get();
+    return $query->result();
+  }
+  public function get_status_count() {
+    $this->db->select('project_status, COUNT(*) AS project_count');
+    $this->db->from('project_management');
+    $this->db->group_by('project_status');
+    $this->db->order_by('project_count', 'DESC');
+
+    $query = $this->db->get();
+    return $query->result();
+  }
   public function get_dispatche($id = FALSE)
   {
     if ($id === FALSE) {

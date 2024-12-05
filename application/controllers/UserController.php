@@ -42,6 +42,38 @@ class UserController extends CI_Controller
     return $decoded_token;
   }
   
+  public function get_user_data(){
+    $this->verify_token();
+    $data = $this->userModel->get_data();
+    if($data){
+      $this->output
+      ->set_content_type('application/json')
+      ->set_status_header(200)
+      ->set_output(json_encode(['data' => $data, 'message' => 'Data fetch successfully']));
+    }
+    else{
+      $this->output
+      ->set_content_type('application/json')
+      ->set_status_header(404)
+      ->set_output(json_encode(['status' => 'error', 'message' => 'Data Not Found']));
+    }
+  }
+  public function get_user_status(){
+    $this->verify_token();
+    $data = $this->userModel->get_status_count();
+    if($data){
+      $this->output
+      ->set_content_type('application/json')
+      ->set_status_header(200)
+      ->set_output(json_encode(['data' => $data, 'message' => 'Data fetch successfully']));
+    }
+    else{
+      $this->output
+      ->set_content_type('application/json')
+      ->set_status_header(404)
+      ->set_output(json_encode(['status' => 'error', 'message' => 'Data Not Found']));
+    }
+  }
 
   public function get_data()
   {

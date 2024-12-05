@@ -96,6 +96,9 @@ $route['api/project/details/(:num)']['GET'] = 'userController/view/$1';
 $route['api/project/create']['POST'] = 'userController/create';
 $route['api/project/update/(:num)']['PUT'] = 'userController/update/$1';
 $route['api/project/delete/(:num)']['DELETE'] = 'userController/delete/$1';
+$route['api/project/getProjectCount']['GET'] = 'userController/get_user_data';
+$route['api/project/getStatusCount']['GET'] = 'userController/get_user_status';
+
 $route['auth/validate']['POST'] = 'userController/verify_token';
 
 $route['api/load'] = 'loadController/index';
