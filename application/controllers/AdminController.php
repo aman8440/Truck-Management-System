@@ -286,7 +286,32 @@ class AdminController extends CI_Controller
 
   public function api_upload_image()
   {
+    $authHeader = $this->input->get_request_header('Authorization', true);
+    if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(401)
+            ->set_output(json_encode(['status' => 'error', 'message' => 'Authorization token is missing or invalid']));
+        return;
+    }
+    $token = $matches[1];
+    try {
+      $decodedToken = verifyToken($token);
+    } catch (Exception $e) {
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(401)
+            ->set_output(json_encode(['status' => 'error', 'message' => 'Invalid or expired token']));
+        return;
+    }
     $user_id = $this->input->post('id');
+    if (empty($_FILES['file']['name'])) {
+      $this->output
+          ->set_content_type('application/json')
+          ->set_status_header(400)
+          ->set_output(json_encode(['status' => 'error', 'message' => 'File is missing']));
+      return;
+    }
     if (empty($user_id)) {
         $this->output
             ->set_content_type('application/json')
@@ -326,6 +351,25 @@ class AdminController extends CI_Controller
 
   public function api_delete_image()
   {
+    $authHeader = $this->input->get_request_header('Authorization', true);
+    if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(401)
+            ->set_output(json_encode(['status' => 'error', 'message' => 'Authorization token is missing or invalid']));
+        return;
+    }
+
+    $token = $matches[1];
+    try {
+      $decodedToken = verifyToken($token);
+    } catch (Exception $e) {
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(401)
+            ->set_output(json_encode(['status' => 'error', 'message' => 'Invalid or expired token']));
+        return;
+    }
     $data = json_decode(file_get_contents('php://input'), true);
     if (empty($data['id'])) {
       $this->output
