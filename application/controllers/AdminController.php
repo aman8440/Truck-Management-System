@@ -288,36 +288,20 @@ class AdminController extends CI_Controller
   {
     $authHeader = $this->input->get_request_header('Authorization', true);
     if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(401)
-            ->set_output(json_encode(['status' => 'error', 'message' => 'Authorization token is missing or invalid']));
-        return;
+      return $this->respond(401, 'Authorization token is missing or invalid.');
     }
     $token = $matches[1];
     try {
       $decodedToken = verifyToken($token);
     } catch (Exception $e) {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(401)
-            ->set_output(json_encode(['status' => 'error', 'message' => 'Invalid or expired token']));
-        return;
+      return $this->respond(401, 'Invalid or expired token.');
     }
     $user_id = $this->input->post('id');
     if (empty($_FILES['file']['name'])) {
-      $this->output
-          ->set_content_type('application/json')
-          ->set_status_header(400)
-          ->set_output(json_encode(['status' => 'error', 'message' => 'File is missing']));
-      return;
+      return $this->respond(400, 'File is missing');
     }
     if (empty($user_id)) {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(400)
-            ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
-        return;
+      return $this->respond(400, 'User ID is required.');
     }
 
     $user_id = (int)$user_id;
@@ -328,8 +312,7 @@ class AdminController extends CI_Controller
 
     if (!$this->upload->do_upload('file')) {
         $error = $this->upload->display_errors('', '');
-        echo json_encode(['status' => 'error', 'message' => $error]);
-        return;
+        return $this->respond(400, $error);
     }
 
     $upload_data = $this->upload->data();
@@ -343,9 +326,12 @@ class AdminController extends CI_Controller
     $check = $this->adminModel->prf_data($user_id, $unique_image_name);
 
     if ($check) {
-        echo json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $unique_image_name]);
+      $this->output
+        ->set_content_type('application/json')
+        ->set_status_header(200)
+        ->set_output(json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $unique_image_name]));
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to save image data. Please try again.']);
+      return $this->respond(500, 'Failed to save image data. Please try again.');
     } 
   }
 
@@ -353,48 +339,48 @@ class AdminController extends CI_Controller
   {
     $authHeader = $this->input->get_request_header('Authorization', true);
     if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(401)
-            ->set_output(json_encode(['status' => 'error', 'message' => 'Authorization token is missing or invalid']));
-        return;
+      return $this->respond(401, 'Authorization token is missing or invalid.');
     }
 
     $token = $matches[1];
     try {
       $decodedToken = verifyToken($token);
     } catch (Exception $e) {
-        $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(401)
-            ->set_output(json_encode(['status' => 'error', 'message' => 'Invalid or expired token']));
-        return;
+      return $this->respond(401, 'Invalid or expired token.');
     }
     $data = json_decode(file_get_contents('php://input'), true);
     if (empty($data['id'])) {
-      $this->output
+      return $this->respond(400, 'User ID is required.');
+    }
+
+    $userId = (int)$data['id'];
+
+    $imageName = $this->adminModel->get_image_name($userId);
+    if (!$imageName) {
+      return $this->respond(404, 'No image found for the provided user ID.');
+    }
+    if ($this->adminModel->delete_image($userId)) {
+      $filePath = 'assets/images/uploads/' . $imageName;
+      if (file_exists($filePath) && !unlink($filePath)) {
+        return $this->respond(500, 'Image record deleted, but failed to delete the file.');
+      }
+      return $this->respond(200, 'Image deleted successfully.');
+    }
+    return $this->respond(500, 'Failed to delete image. Please try again.');
+  }
+  
+  /**
+   * Utility function to send a JSON response with a specific HTTP status code.
+   *
+   * @param int $statusCode HTTP status code.
+   * @param string $message Response message.
+   * @return void
+   */
+  private function respond($statusCode, $message)
+  {
+    $this->output
         ->set_content_type('application/json')
-        ->set_status_header(400)
-        ->set_output(json_encode(['status' => 'error', 'message' => 'User ID is required.']));
-      return;
-    }
-    $user_id= (int)$data['id'];
-    $image_name = $this->adminModel->get_image_name($user_id);
-
-    if (!$image_name) {
-      echo json_encode(['status' => 'error', 'message' => 'No image found for the provided user ID.']);
-      return;
-    }
-    $delete = $this->adminModel->delete_image($user_id);
-
-    if ($delete) {
-        $file_path = 'assets/images/uploads' . $image_name;
-        if (file_exists($file_path)) {
-          unlink($file_path);
-        }
-        echo json_encode(['status' => 'success', 'message' => 'Image deleted successfully.']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to delete image. Please try again.']);
-    }
+        ->set_status_header($statusCode)
+        ->set_output(json_encode(['status' => $statusCode === 200 || $statusCode === 201 ? 'success' : 'error', 'message' => $message]));
   }
 };
