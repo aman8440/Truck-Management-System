@@ -99,14 +99,6 @@ $route['api/project/delete/(:num)']['DELETE'] = 'userController/delete/$1';
 $route['api/project/getProjectCount']['GET'] = 'userController/get_user_data';
 $route['api/project/getStatusCount']['GET'] = 'userController/get_user_status';
 
-$route['auth/validate']['POST'] = 'userController/verify_token';
-
-$route['api/load'] = 'loadController/index';
-$route['api/load/(:num)'] = 'loadController/view/$1';
-$route['api/load/create'] = 'loadController/create';
-$route['api/load/update/(:num)'] = 'loadController/update/$1';
-$route['api/load/delete/(:num)'] = 'loadController/delete/$1';
-
 $route['me']['GET'] = 'adminController/view';
 $route['me/profile']['POST'] = 'adminController/api_upload_image';
 $route['me/profile/delete']['POST'] = 'adminController/api_delete_image';
@@ -117,6 +109,12 @@ $route['api/logout']['GET'] = 'adminController/logout';
 $route['forgot_password'] = 'adminController/forgot_password';
 $route['verify-token'] = 'adminController/verify_reset_token';
 $route['reset_password'] = 'adminController/reset_password';
+
+$route['api/load'] = 'loadController/index';
+$route['api/load/(:num)'] = 'loadController/view/$1';
+$route['api/load/create'] = 'loadController/create';
+$route['api/load/update/(:num)'] = 'loadController/update/$1';
+$route['api/load/delete/(:num)'] = 'loadController/delete/$1';
 
 $route['api/load-docs'] = 'load_DocController/index';
 $route['api/load-docs/create'] = 'load_DocController/create';
