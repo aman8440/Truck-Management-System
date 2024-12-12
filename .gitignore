@@ -1,1 +1,28 @@
 /frontend/node_modules
+
+system/
+
+# Logs and cache
+application/logs/
+application/cache/
+
+# Sensitive config files
+application/config/database.php
+application/config/config.php
+
+# Uploads
+uploads/
+
+# Composer dependencies
+vendor/
+
+# IDE and editor configurations
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Environment-specific files
+.env
