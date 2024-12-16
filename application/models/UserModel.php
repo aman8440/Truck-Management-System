@@ -45,7 +45,7 @@ class UserModel extends CI_Model
     $this->db->order_by($sort, $order);
     $this->db->limit($limit, $offset);
     $query = $this->db->get('project_management');
-    $result['data'] = $query->result();
+    $result['projects'] = $query->result();
     $this->db->where('deleted_at', NULL);
     if (!empty($search)) {
         $this->db->group_start();

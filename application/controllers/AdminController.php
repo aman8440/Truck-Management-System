@@ -155,15 +155,24 @@ class AdminController extends CI_Controller
    * @OA\Schema(
    *     schema="GetAdminResponse",
    *     type="object",
+   *     required={"status", "admin", "message"},
    *     @OA\Property(property="status", type="string", example="success"),
    *     @OA\Property(
    *         property="admin",
    *         type="object",
+   *         required={"id", "fname", "lname", "email", "gender", "phone", "status"},
    *         @OA\Property(property="id", type="integer", example=1),
-   *         @OA\Property(property="name", type="string", example="Admin Name"),
+   *         @OA\Property(property="fname", type="string", example="Admin"),
+   *         @OA\Property(property="lname", type="string", example="Name"),
    *         @OA\Property(property="email", type="string", example="admin@example.com"),
-   *         @OA\Property(property="phone", type="string", example="1234567890")
-   *     )
+   *         @OA\Property(property="gender", type="string", example="Male"),
+   *         @OA\Property(property="phone", type="string", example="1234567890"),
+   *         @OA\Property(property="status", type="string", example="yes"),
+   *         @OA\Property(property="image_name", type="string", example="67600e3e49.png"),
+   *         @OA\Property(property="created", type="string", example="2024-11-21 18:20:52"),
+   *         @OA\Property(property="updated", type="string", example="2024-12-16 16:55:50")
+   *     ),
+   *     @OA\Property(property="message", type="string", example="Profile Fetch Successfully!"),
    * )
    */
   public function view()
@@ -207,7 +216,7 @@ class AdminController extends CI_Controller
     $this->output
         ->set_content_type('application/json')
         ->set_status_header(200)
-        ->set_output(json_encode(['status' => 'success', 'admin' => $admin]));
+        ->set_output(json_encode(['status' => 'success', 'admin' => $admin , 'message' => 'Profile Fetch Successfully!']));
   }
 
   /**

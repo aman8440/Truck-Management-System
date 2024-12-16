@@ -1800,31 +1800,73 @@
                 "type": "object"
             },
             "GetAdminResponse": {
+                "required": [
+                    "status",
+                    "admin",
+                    "message"
+                ],
                 "properties": {
                     "status": {
                         "type": "string",
                         "example": "success"
                     },
                     "admin": {
+                        "required": [
+                            "id",
+                            "fname",
+                            "lname",
+                            "email",
+                            "gender",
+                            "phone",
+                            "status"
+                        ],
                         "properties": {
                             "id": {
                                 "type": "integer",
                                 "example": 1
                             },
-                            "name": {
+                            "fname": {
                                 "type": "string",
-                                "example": "Admin Name"
+                                "example": "Admin"
+                            },
+                            "lname": {
+                                "type": "string",
+                                "example": "Name"
                             },
                             "email": {
                                 "type": "string",
                                 "example": "admin@example.com"
                             },
+                            "gender": {
+                                "type": "string",
+                                "example": "Male"
+                            },
                             "phone": {
                                 "type": "string",
                                 "example": "1234567890"
+                            },
+                            "status": {
+                                "type": "string",
+                                "example": "yes"
+                            },
+                            "image_name": {
+                                "type": "string",
+                                "example": "67600e3e49.png"
+                            },
+                            "created": {
+                                "type": "string",
+                                "example": "2024-11-21 18:20:52"
+                            },
+                            "updated": {
+                                "type": "string",
+                                "example": "2024-12-16 16:55:50"
                             }
                         },
                         "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Profile Fetch Successfully!"
                     }
                 },
                 "type": "object"
@@ -2067,6 +2109,10 @@
                 "type": "object"
             },
             "GetProjectCountResponse": {
+                "required": [
+                    "data",
+                    "message"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -2096,6 +2142,10 @@
                 "type": "object"
             },
             "GetProjectStatusResponse": {
+                "required": [
+                    "data",
+                    "message"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -2635,11 +2685,11 @@
                         "example": "Under Planning"
                     },
                     "created_by": {
-                        "type": "integer",
+                        "type": "string",
                         "example": "xxx"
                     },
                     "updated_by": {
-                        "type": "integer",
+                        "type": "string",
                         "example": "xxx"
                     }
                 },
@@ -2677,7 +2727,6 @@
                     "project_repo_tool",
                     "project_repo_url",
                     "project_status",
-                    "created_by",
                     "updated_by"
                 ],
                 "properties": {
@@ -2741,12 +2790,8 @@
                         "type": "string",
                         "example": "Under Planning"
                     },
-                    "created_by": {
-                        "type": "integer",
-                        "example": "xxx"
-                    },
                     "updated_by": {
-                        "type": "integer",
+                        "type": "string",
                         "example": "xxx"
                     }
                 },
