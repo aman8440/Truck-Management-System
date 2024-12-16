@@ -87,6 +87,7 @@ class UserController extends CI_Controller
    * @OA\Schema(
    *     schema="GetProjectCountResponse",
    *     type="object",
+   *     required={"data", "message"},
    *     @OA\Property(property="data", type="array", 
    *         @OA\Items(type="object", 
    *             required={
@@ -158,6 +159,7 @@ class UserController extends CI_Controller
    * @OA\Schema(
    *     schema="GetProjectStatusResponse",
    *     type="object",
+   *     required={"data", "message"}, 
    *     @OA\Property(property="data", type="array", 
    *         @OA\Items(type="object", 
    *             required={
@@ -835,8 +837,8 @@ class UserController extends CI_Controller
    *     @OA\Property(property="project_repo_tool", type="string", example="GitHub"),
    *     @OA\Property(property="project_repo_url", type="string", example="https://github.com/projectX"),
    *     @OA\Property(property="project_status", type="string", example="Under Planning"),
-   *     @OA\Property(property="created_by", type="integer", example="xxx"),
-   *     @OA\Property(property="updated_by", type="integer", example="xxx")
+   *     @OA\Property(property="created_by", type="string", example="xxx"),
+   *     @OA\Property(property="updated_by", type="string", example="xxx")
    * ),
    * @OA\Schema(
    *     schema="CreateProjectResponse",
@@ -952,7 +954,6 @@ class UserController extends CI_Controller
    *         "project_repo_tool",
    *         "project_repo_url",
    *         "project_status",
-   *         "created_by",
    *         "updated_by"
    *     },
    *     @OA\Property(property="project_name", type="string", example="New Project"),
@@ -968,8 +969,7 @@ class UserController extends CI_Controller
    *     @OA\Property(property="project_repo_tool", type="string", example="GitHub"),
    *     @OA\Property(property="project_repo_url", type="string", example="https://github.com/projectX"),
    *     @OA\Property(property="project_status", type="string", example="Under Planning"),
-   *     @OA\Property(property="created_by", type="integer", example="xxx"),
-   *     @OA\Property(property="updated_by", type="integer", example="xxx")
+   *     @OA\Property(property="updated_by", type="string", example="xxx")
    * ),
    * @OA\Schema(
    *     schema="UpdateProjectResponse",
