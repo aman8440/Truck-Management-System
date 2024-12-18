@@ -351,6 +351,12 @@ class UserController extends CI_Controller
    *         description="Filter by project technology",
    *         @OA\Schema(type="string")
    *     ),
+   *     @OA\Parameter(
+   *         name="project_management_tool",
+   *         in="query",
+   *         description="Filter by project tool",
+   *         @OA\Schema(type="string")
+   *     ),
    *     @OA\Response(
    *         response=200,
    *         description="Success - Successful data retrieval with pagination",
@@ -462,8 +468,9 @@ class UserController extends CI_Controller
     $deadlineAt = $this->input->get('project_deadline');
     $status = $this->input->get('project_status');
     $tech = $this->input->get('project_tech');
+    $tool = $this->input->get('project_management_tool');
     $offset = ($page - 1) * $limit;
-    $data = $this->userModel->get_users($search, $sort, $order, $page, $limit, $startAt, $deadlineAt, $status, $tech);
+    $data = $this->userModel->get_users($search, $sort, $order, $page, $limit, $startAt, $deadlineAt, $status, $tech, $tool);
     if($data){
       $this->output
       ->set_content_type('application/json')

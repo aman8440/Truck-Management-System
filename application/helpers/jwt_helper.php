@@ -14,7 +14,7 @@ function generateToken($data)
 {
   $key = 'your_secret_key';
   $issuedAt = time();
-  $expirationTime = $issuedAt + 3600;  // jwt valid for 1 hour from the issued time
+  $expirationTime = $issuedAt + 24 * 3600;  // jwt valid for 24 hour from the issued time
   $payload = array(
     'iat' => $issuedAt,
     'exp' => $expirationTime,
