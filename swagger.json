@@ -1126,6 +1126,14 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "project_management_tool",
+                        "in": "query",
+                        "description": "Filter by project tool",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {

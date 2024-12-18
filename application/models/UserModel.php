@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class UserModel extends CI_Model
 {
 
-  public function get_users($search = '', $sort = 'id', $order = 'asc', $page = 1, $limit = 10, $startAt = '', $deadlineAt = '', $status = '', $tech = '')
+  public function get_users($search = '', $sort = 'id', $order = 'asc', $page = 1, $limit = 10, $startAt = '', $deadlineAt = '', $status = '', $tech = '', $tool = '')
   {
     $offset = ($page - 1) * $limit;
     $this->db->where('deleted_at', NULL);
@@ -40,6 +40,9 @@ class UserModel extends CI_Model
         $this->db->or_like('project_tech', $t);
       }
       $this->db->group_end(); 
+    }
+    if (!empty($tool)) {
+        $this->db->where('project_management_tool', $tool);
     }
 
     $this->db->order_by($sort, $order);
@@ -82,6 +85,10 @@ class UserModel extends CI_Model
         $this->db->or_like('project_tech', $t);
       }
       $this->db->group_end();
+    }
+
+    if (!empty($tool)) {
+      $this->db->where('project_management_tool', $tool);
     }
     $result['total'] = $this->db->count_all_results('project_management');
     return $result;
