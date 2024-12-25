@@ -730,9 +730,10 @@ class AdminController extends CI_Controller
    * @OA\Schema(
    *     schema="ProfileImageUploadRequest",
    *     type="object",
-   *     required={"id", "file"},
+   *     required={"id", "file", "thumbnail"},
    *     @OA\Property(property="id", type="integer"),
-   *     @OA\Property(property="file", type="string", format="binary")
+   *     @OA\Property(property="file", type="string", format="binary"),
+   *     @OA\Property(property="thumbnail", type="string", format="binary")
    * ),
    * @OA\Schema(
    *     schema="UploadSuccessResponse",
@@ -756,39 +757,54 @@ class AdminController extends CI_Controller
       return $this->respond(401, 'Invalid or expired token.');
     }
     $user_id = $this->input->post('id');
-    if (empty($_FILES['file']['name'])) {
-      return $this->respond(400, 'File is missing');
+    if (empty($_FILES['file']['name']) || empty($_FILES['thumbnail']['name'])) {
+      return $this->respond(400, 'Both main file and thumbnail are required.');
     }
+
     if (empty($user_id)) {
       return $this->respond(400, 'User ID is required.');
     }
 
     $user_id = (int)$user_id;
-    $config['upload_path'] = 'assets/images/uploads';
-    $config['allowed_types'] = 'jpg|png|jpeg|webp';
-    $config['max_size'] = 500; 
-    $this->load->library('upload', $config);
+    $upload_path = 'assets/images/uploads/';
+    $thumbnail_path = 'assets/images/uploads/thumbnail/';
+    $allowed_types = 'jpg|jpeg';
+    $max_size = 500; 
+    $this->load->library('upload');
+    $config['upload_path'] = $upload_path;
+    $config['allowed_types'] = $allowed_types;
+    $config['max_size'] = $max_size;
+    $unique_id = uniqid();
+    $extension = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+    $main_image_name = $unique_id . '.' . $extension;
+    $config['file_name'] = $main_image_name;
+
+    $this->upload->initialize($config);
 
     if (!$this->upload->do_upload('file')) {
-        $error = $this->upload->display_errors('', '');
-        return $this->respond(400, $error);
+      $error = $this->upload->display_errors('', '');
+      return $this->respond(400, 'Main Image: ' . $error);
     }
+    $unique_image_name = $this->upload->data();
 
-    $upload_data = $this->upload->data();
-    $unique_id = uniqid();
-    $extension = pathinfo($upload_data['file_name'], PATHINFO_EXTENSION);
-    $unique_image_name = $unique_id . '.' . $extension;
+    $config['upload_path'] = $thumbnail_path;
+    $thumbnail_name = $unique_id . '.' . $extension;
+    $config['file_name'] = $thumbnail_name;
 
-    $new_file_path = $config['upload_path'] . '/' . $unique_image_name;
-    rename($upload_data['full_path'], $new_file_path);
+    $this->upload->initialize($config);
 
-    $check = $this->adminModel->prf_data($user_id, $unique_image_name);
+    if (!$this->upload->do_upload('thumbnail')) {
+      $error = $this->upload->display_errors('', '');
+      return $this->respond(400, 'Thumbnail: ' . $error);
+    }
+    $thumb_upload_data = $this->upload->data();
+    $check = $this->adminModel->prf_data($user_id, $unique_image_name['file_name']);
 
     if ($check) {
       $this->output
         ->set_content_type('application/json')
         ->set_status_header(200)
-        ->set_output(json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $unique_image_name]));
+        ->set_output(json_encode(['status' => 'success', 'message' => 'Image uploaded successfully.', 'image_name' => $unique_image_name, 'thumbnail_image' => $thumb_upload_data]));
     } else {
       return $this->respond(500, 'Failed to save image data. Please try again.');
     } 
@@ -885,8 +901,17 @@ class AdminController extends CI_Controller
     }
     if ($this->adminModel->delete_image($userId)) {
       $filePath = 'assets/images/uploads/' . $imageName;
-      if (file_exists($filePath) && !unlink($filePath)) {
-        return $this->respond(500, 'Image record deleted, but failed to delete the file.');
+      $fileThumbnailPath = 'assets/images/uploads/thumbnail/' . $imageName;
+      if (file_exists($filePath)) {
+        if (!unlink($filePath)) {
+          return $this->respond(500, 'Failed to delete main image file.');
+        }
+      }
+    
+      if (file_exists($fileThumbnailPath)) {
+        if (!unlink($fileThumbnailPath)) {
+          return $this->respond(500, 'Main image deleted, but failed to delete thumbnail.');
+        }
       }
       return $this->respond(200, 'Image deleted successfully.');
     }

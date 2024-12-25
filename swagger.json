@@ -2048,13 +2048,18 @@
             "ProfileImageUploadRequest": {
                 "required": [
                     "id",
-                    "file"
+                    "file",
+                    "thumbnail"
                 ],
                 "properties": {
                     "id": {
                         "type": "integer"
                     },
                     "file": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "thumbnail": {
                         "type": "string",
                         "format": "binary"
                     }
