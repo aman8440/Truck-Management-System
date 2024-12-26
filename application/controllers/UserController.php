@@ -469,7 +469,7 @@ class UserController extends CI_Controller
     $status = $this->input->get('project_status');
     $tech = $this->input->get('project_tech');
     $tool = $this->input->get('project_management_tool');
-    $offset = ($page - 1) * $limit;
+    $offset = ($page) * $limit;
     $data = $this->userModel->get_users($search, $sort, $order, $page, $limit, $startAt, $deadlineAt, $status, $tech, $tool);
     if($data){
       $this->output

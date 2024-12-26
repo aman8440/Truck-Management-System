@@ -3,9 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class UserModel extends CI_Model
 {
 
-  public function get_users($search = '', $sort = 'id', $order = 'asc', $page = 1, $limit = 10, $startAt = '', $deadlineAt = '', $status = '', $tech = '', $tool = '')
+  public function get_users($search = '', $sort = 'id', $order = 'asc', $page = 0, $limit = 15, $startAt = '', $deadlineAt = '', $status = '', $tech = '', $tool = '')
   {
-    $offset = ($page - 1) * $limit;
+    $offset = ($page) * $limit;
     $this->db->where('deleted_at', NULL);
     if (!empty($search)) {
         $this->db->group_start();
