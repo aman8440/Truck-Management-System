@@ -1,0 +1,2856 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Truck Management API",
+        "description": "API documentation for the Truck Management system.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/truck_management/",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/verify_token": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify JWT Token",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenVerifyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenVerifyResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token is missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token is missing"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "View Admin Profile",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of admin profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAdminResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ID is missing in token payload"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Admin",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Admin not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login API",
+                "description": "Authenticate a user and return a JWT token.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminLoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing email or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email and Password are required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid email or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid email or password"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/signup": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Create Admin User",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAdminRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created - User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateAdminResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Missing required fields or invalid input format"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - User already exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to create user. Email or phone may already be registered."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot_password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Initiate Password Reset",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgetPassRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Password reset token sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ForgetPassResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Email not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Email sending failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to send email"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verify-token": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify Password Reset Token",
+                "parameters": [
+                    {
+                        "name": "reset_token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success - Token is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid or expired token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Token is required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reset_password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Reset Password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResetPassRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Password reset successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResetPassResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid token or missing password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token and new password are required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid or expired token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Admin Logout",
+                "responses": {
+                    "200": {
+                        "description": "Success - Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LogoutResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - No active session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No active session found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me/profile": {
+            "post": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Upload Profile Image",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileImageUploadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Image uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UploadSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - File or User ID missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Failed to save image data. Please try again.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to save image data. Please try again."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/me/profile/delete": {
+            "post": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Delete Profile Image",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteImageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Image uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteImageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - User ID missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User ID is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - No image found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No image found for the provided user ID"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Failed to delete image",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to delete image. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/project/getProjectCount": {
+            "get": {
+                "tags": [
+                    "ProjectCount"
+                ],
+                "summary": "Fetch Project count data",
+                "responses": {
+                    "200": {
+                        "description": "Success - Successful data retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetProjectCountResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed -  Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/project/getStatusCount": {
+            "get": {
+                "tags": [
+                    "ProjectStatus"
+                ],
+                "summary": "Fetch Project status data",
+                "responses": {
+                    "200": {
+                        "description": "Success - Successful data retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetProjectStatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/project": {
+            "get": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Retrieve all Project data",
+                "responses": {
+                    "200": {
+                        "description": "Success - Successful data retrieval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetProjectDataResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - No data found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/list": {
+            "get": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Retrieve project data with filtering and pagination",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search term for filtering the project",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort the data by a specific field",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Sort order (asc or desc)",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results per page",
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "project_startat",
+                        "in": "query",
+                        "description": "Filter by project start date",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "project_deadline",
+                        "in": "query",
+                        "description": "Filter by project deadline",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "project_status",
+                        "in": "query",
+                        "description": "Filter by project status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Under Planning",
+                                "Development Started",
+                                "Under Testing",
+                                "Deployed on Dev",
+                                "Live"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "project_tech",
+                        "in": "query",
+                        "description": "Filter by project technology",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "project_management_tool",
+                        "in": "query",
+                        "description": "Filter by project tool",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success - Successful data retrieval with pagination",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetProjectListDataResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid parameters"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - No data found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Authorization token is missing or invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/details/{id}": {
+            "get": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Retrieve project data by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the project to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success - Successful retrieval of project data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetProjectDataByIdResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid parameters"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed - Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/status": {
+            "post": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Retrieve project status data based on start and end dates",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GetStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of merged project tech statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetStatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing project_startat or project_deadline",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project start at and project deadline is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/tech": {
+            "post": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Retrieve unique technologies based on project status",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GetTechRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of unique technologies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetTechResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Missing project_status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project status is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/project/create": {
+            "post": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Create a new project",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateProjectRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created - Project created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateProjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All fields are required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - Data insertion failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data must be in conflict"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/project/update/{id}": {
+            "put": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Update an existing project",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the project to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProjectRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created - Project updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateProjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All fields are required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - Update failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data must be in conflict during update"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/project/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Project Management"
+                ],
+                "summary": "Delete a project",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the project to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteProjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Project not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TokenVerifyRequest": {
+                "properties": {
+                    "token": {
+                        "description": "JWT Token to verify",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "TokenVerifyResponse": {
+                "properties": {
+                    "status": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "GetAdminResponse": {
+                "required": [
+                    "status",
+                    "admin",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "admin": {
+                        "required": [
+                            "id",
+                            "fname",
+                            "lname",
+                            "email",
+                            "gender",
+                            "phone",
+                            "status"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "fname": {
+                                "type": "string",
+                                "example": "Admin"
+                            },
+                            "lname": {
+                                "type": "string",
+                                "example": "Name"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "admin@example.com"
+                            },
+                            "gender": {
+                                "type": "string",
+                                "example": "Male"
+                            },
+                            "phone": {
+                                "type": "string",
+                                "example": "1234567890"
+                            },
+                            "status": {
+                                "type": "string",
+                                "example": "yes"
+                            },
+                            "image_name": {
+                                "type": "string",
+                                "example": "67600e3e49.png"
+                            },
+                            "created": {
+                                "type": "string",
+                                "example": "2024-11-21 18:20:52"
+                            },
+                            "updated": {
+                                "type": "string",
+                                "example": "2024-12-16 16:55:50"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Profile Fetch Successfully!"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminLoginRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminLoginResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Login Successfully"
+                    },
+                    "token": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR..."
+                    }
+                },
+                "type": "object"
+            },
+            "CreateAdminRequest": {
+                "required": [
+                    "name",
+                    "phone",
+                    "email",
+                    "gender",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateAdminResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "User created successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "ForgetPassRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "type": "object"
+            },
+            "ForgetPassResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Password reset token sent to your email"
+                    }
+                },
+                "type": "object"
+            },
+            "TokenResetResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Token is valid"
+                    }
+                },
+                "type": "object"
+            },
+            "ResetPassRequest": {
+                "required": [
+                    "reset_token",
+                    "password"
+                ],
+                "properties": {
+                    "reset_token": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "ResetPassResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Password reset successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "LogoutResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Logout successful"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileImageUploadRequest": {
+                "required": [
+                    "id",
+                    "file",
+                    "thumbnail"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "thumbnail": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "UploadSuccessResponse": {
+                "required": [
+                    "status",
+                    "message",
+                    "image_name"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Image uploaded successfully."
+                    },
+                    "image_name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "DeleteImageRequest": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "User ID of the image owner",
+                        "type": "integer",
+                        "example": 123
+                    }
+                },
+                "type": "object"
+            },
+            "DeleteImageResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Image uploaded successfully."
+                    },
+                    "image_name": {
+                        "type": "string",
+                        "example": "profile123.jpg"
+                    }
+                },
+                "type": "object"
+            },
+            "GetProjectCountResponse": {
+                "required": [
+                    "data",
+                    "message"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "month_name",
+                                "project_count"
+                            ],
+                            "properties": {
+                                "month_name": {
+                                    "type": "string",
+                                    "example": "December 2024"
+                                },
+                                "project_count": {
+                                    "type": "integer",
+                                    "example": 5
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Data fetch successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "GetProjectStatusResponse": {
+                "required": [
+                    "data",
+                    "message"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "project_status",
+                                "project_count"
+                            ],
+                            "properties": {
+                                "project_status": {
+                                    "type": "string",
+                                    "example": "Under Planning"
+                                },
+                                "project_count": {
+                                    "type": "integer",
+                                    "example": 5
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Data fetch successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "GetProjectDataResponse": {
+                "type": "array",
+                "items": {
+                    "required": [
+                        "id",
+                        "project_name",
+                        "project_tech",
+                        "project_startat",
+                        "project_deadline",
+                        "project_lead",
+                        "team_size",
+                        "project_client",
+                        "project_management_tool",
+                        "project_management_url",
+                        "project_description",
+                        "project_repo_tool",
+                        "project_repo_url",
+                        "project_status",
+                        "created_by",
+                        "updated_by",
+                        "created_at",
+                        "updated_at"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "project_name": {
+                            "type": "string",
+                            "example": "Project A"
+                        },
+                        "project_tech": {
+                            "type": "string",
+                            "example": "PHP, MySQL, Angular"
+                        },
+                        "project_startat": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-01"
+                        },
+                        "project_deadline": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-12-31"
+                        },
+                        "project_lead": {
+                            "type": "string",
+                            "example": "John Doe"
+                        },
+                        "team_size": {
+                            "type": "integer",
+                            "example": 5
+                        },
+                        "project_client": {
+                            "type": "string",
+                            "example": "ABC Corp"
+                        },
+                        "project_management_tool": {
+                            "type": "string",
+                            "example": "Jira"
+                        },
+                        "project_management_url": {
+                            "type": "string",
+                            "example": "https://jira.com/project-A"
+                        },
+                        "project_description": {
+                            "type": "string",
+                            "example": "This project aims to..."
+                        },
+                        "project_repo_tool": {
+                            "type": "string",
+                            "example": "GitHub"
+                        },
+                        "project_repo_url": {
+                            "type": "string",
+                            "example": "https://github.com/ABC/project-A"
+                        },
+                        "project_status": {
+                            "type": "string",
+                            "enum": [
+                                "Under Planning",
+                                "Development Started",
+                                "Under Testing",
+                                "Deployed on Dev",
+                                "Live"
+                            ],
+                            "example": "Under Planning"
+                        },
+                        "created_by": {
+                            "type": "string",
+                            "example": "Admin"
+                        },
+                        "updated_by": {
+                            "type": "string",
+                            "example": "Admin"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-01-01T12:00:00Z"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-06-01T12:00:00Z"
+                        },
+                        "deleted_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-12-31T12:00:00Z"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "GetProjectListDataResponse": {
+                "required": [
+                    "limit",
+                    "offset"
+                ],
+                "properties": {
+                    "data": {
+                        "required": [
+                            "total"
+                        ],
+                        "properties": {
+                            "projects": {
+                                "type": "array",
+                                "items": {
+                                    "required": [
+                                        "id",
+                                        "project_name",
+                                        "project_tech",
+                                        "project_startat",
+                                        "project_deadline",
+                                        "project_lead",
+                                        "team_size",
+                                        "project_client",
+                                        "project_management_tool",
+                                        "project_management_url",
+                                        "project_description",
+                                        "project_repo_tool",
+                                        "project_repo_url",
+                                        "project_status",
+                                        "created_by",
+                                        "updated_by",
+                                        "created_at",
+                                        "updated_at"
+                                    ],
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "project_name": {
+                                            "type": "string",
+                                            "example": "Project A"
+                                        },
+                                        "project_tech": {
+                                            "type": "string",
+                                            "example": "PHP, JavaScript"
+                                        },
+                                        "project_startat": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2023-01-01"
+                                        },
+                                        "project_deadline": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2023-12-31"
+                                        },
+                                        "project_lead": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "team_size": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "project_client": {
+                                            "type": "string",
+                                            "example": "Client X"
+                                        },
+                                        "project_management_tool": {
+                                            "type": "string",
+                                            "example": "Trello"
+                                        },
+                                        "project_management_url": {
+                                            "type": "string",
+                                            "example": "https://trello.com/projectX"
+                                        },
+                                        "project_description": {
+                                            "type": "string",
+                                            "example": "Project description..."
+                                        },
+                                        "project_repo_tool": {
+                                            "type": "string",
+                                            "example": "GitHub"
+                                        },
+                                        "project_repo_url": {
+                                            "type": "string",
+                                            "example": "https://github.com/projectX"
+                                        },
+                                        "project_status": {
+                                            "type": "string",
+                                            "example": "Under Planning"
+                                        },
+                                        "created_by": {
+                                            "type": "string",
+                                            "example": "Admin"
+                                        },
+                                        "updated_by": {
+                                            "type": "string",
+                                            "example": "Admin"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-01-01T10:00:00Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-06-01T10:00:00Z"
+                                        },
+                                        "deleted_at": {
+                                            "nullable": true,
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2023-12-01T10:00:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 100
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "GetProjectDataByIdResponse": {
+                "required": [
+                    "id",
+                    "project_name",
+                    "project_tech",
+                    "project_startat",
+                    "project_deadline",
+                    "project_lead",
+                    "team_size",
+                    "project_client",
+                    "project_management_tool",
+                    "project_management_url",
+                    "project_description",
+                    "project_repo_tool",
+                    "project_repo_url",
+                    "project_status",
+                    "created_by",
+                    "updated_by",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "project_name": {
+                        "type": "string",
+                        "example": "Project A"
+                    },
+                    "project_tech": {
+                        "type": "string",
+                        "example": "PHP, JavaScript"
+                    },
+                    "project_startat": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-01"
+                    },
+                    "project_deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-12-31"
+                    },
+                    "project_lead": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "team_size": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "project_client": {
+                        "type": "string",
+                        "example": "Client X"
+                    },
+                    "project_management_tool": {
+                        "type": "string",
+                        "example": "Trello"
+                    },
+                    "project_management_url": {
+                        "type": "string",
+                        "example": "https://trello.com/projectX"
+                    },
+                    "project_description": {
+                        "type": "string",
+                        "example": "Project description..."
+                    },
+                    "project_repo_tool": {
+                        "type": "string",
+                        "example": "GitHub"
+                    },
+                    "project_repo_url": {
+                        "type": "string",
+                        "example": "https://github.com/projectX"
+                    },
+                    "project_status": {
+                        "type": "string",
+                        "example": "Under Planning"
+                    },
+                    "created_by": {
+                        "type": "string",
+                        "example": "Admin"
+                    },
+                    "updated_by": {
+                        "type": "string",
+                        "example": "Admin"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T10:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-06-01T10:00:00Z"
+                    },
+                    "deleted_at": {
+                        "nullable": true,
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T10:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "GetStatusRequest": {
+                "required": [
+                    "project_startat",
+                    "project_deadline"
+                ],
+                "properties": {
+                    "project_startat": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-01"
+                    },
+                    "project_deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-12-31"
+                    }
+                },
+                "type": "object"
+            },
+            "GetStatusResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Under Planning"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "GetTechRequest": {
+                "required": [
+                    "project_status"
+                ],
+                "properties": {
+                    "project_status": {
+                        "type": "string",
+                        "example": "Under Planning"
+                    }
+                },
+                "type": "object"
+            },
+            "GetTechResponse": {
+                "required": [
+                    "status",
+                    "data"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "data": {
+                        "description": "Array of technologies, must include at least one item",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Node.js"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "type": "object"
+            },
+            "CreateProjectRequest": {
+                "required": [
+                    "project_name",
+                    "project_tech",
+                    "project_startat",
+                    "project_deadline",
+                    "project_lead",
+                    "team_size",
+                    "project_client",
+                    "project_management_tool",
+                    "project_management_url",
+                    "project_description",
+                    "project_repo_tool",
+                    "project_repo_url",
+                    "project_status",
+                    "created_by",
+                    "updated_by"
+                ],
+                "properties": {
+                    "project_name": {
+                        "type": "string",
+                        "example": "New Project"
+                    },
+                    "project_tech": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Angular",
+                            "Node.js"
+                        ]
+                    },
+                    "project_startat": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-01-01"
+                    },
+                    "project_deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-06-01"
+                    },
+                    "project_lead": {
+                        "type": "string",
+                        "example": "Adam"
+                    },
+                    "team_size": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "project_client": {
+                        "type": "string",
+                        "example": "TechCorp"
+                    },
+                    "project_management_tool": {
+                        "type": "string",
+                        "example": "Trello"
+                    },
+                    "project_management_url": {
+                        "type": "string",
+                        "example": "https://trello.com/projectX"
+                    },
+                    "project_description": {
+                        "type": "string",
+                        "example": "This is a description of the project."
+                    },
+                    "project_repo_tool": {
+                        "type": "string",
+                        "example": "GitHub"
+                    },
+                    "project_repo_url": {
+                        "type": "string",
+                        "example": "https://github.com/projectX"
+                    },
+                    "project_status": {
+                        "type": "string",
+                        "example": "Under Planning"
+                    },
+                    "created_by": {
+                        "type": "string",
+                        "example": "xxx"
+                    },
+                    "updated_by": {
+                        "type": "string",
+                        "example": "xxx"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateProjectResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Your Data Inserted Successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProjectRequest": {
+                "required": [
+                    "project_name",
+                    "project_tech",
+                    "project_startat",
+                    "project_deadline",
+                    "project_lead",
+                    "team_size",
+                    "project_client",
+                    "project_management_tool",
+                    "project_management_url",
+                    "project_description",
+                    "project_repo_tool",
+                    "project_repo_url",
+                    "project_status",
+                    "updated_by"
+                ],
+                "properties": {
+                    "project_name": {
+                        "type": "string",
+                        "example": "New Project"
+                    },
+                    "project_tech": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Angular",
+                            "Node.js"
+                        ]
+                    },
+                    "project_startat": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-01-01"
+                    },
+                    "project_deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-06-01"
+                    },
+                    "project_lead": {
+                        "type": "string",
+                        "example": "Adam"
+                    },
+                    "team_size": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "project_client": {
+                        "type": "string",
+                        "example": "TechCorp"
+                    },
+                    "project_management_tool": {
+                        "type": "string",
+                        "example": "Trello"
+                    },
+                    "project_management_url": {
+                        "type": "string",
+                        "example": "https://trello.com/projectX"
+                    },
+                    "project_description": {
+                        "type": "string",
+                        "example": "This is a description of the project."
+                    },
+                    "project_repo_tool": {
+                        "type": "string",
+                        "example": "GitHub"
+                    },
+                    "project_repo_url": {
+                        "type": "string",
+                        "example": "https://github.com/projectX"
+                    },
+                    "project_status": {
+                        "type": "string",
+                        "example": "Under Planning"
+                    },
+                    "updated_by": {
+                        "type": "string",
+                        "example": "xxx"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProjectResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Your Data updated Successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "DeleteProjectResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Your Data Deleted Successfully"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
