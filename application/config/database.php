@@ -96,21 +96,6 @@ $db['default'] = array(
 );
 
 // $db['default'] = array(
-// 	'dsn'	=> '',
-// 	'hostname' => 'localhost',
-// 	'username' => 'root',
-// 	'password' => 'password',
-// 	'database' => 'Trucking_App',
-// 	'dbdriver' => 'mysqli',
-// 	'dbprefix' => '',
-// 	'pconnect' => FALSE,
-// 	'db_debug' => (ENVIRONMENT !== 'production'),
-// 	'cache_on' => FALSE,
-// 	'cachedir' => '',
-// 	'char_set' => 'utf8mb4',
-// 	'dbcollat' => 'utf8mb4_0900_ai_ci',
-// 	'swap_pre' => '',
-// 	'encrypt' => FALSE,
 // 	'compress' => FALSE,
 // 	'stricton' => FALSE,
 // 	'failover' => array(),
